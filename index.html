@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>西班牙语C1 · 词语派生练习</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f5f4f0;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 1rem;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 4px;
+    color: #1a1a1a;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 1.25rem;
+  }
+
+  .topic-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .topic-btn {
+    font-size: 13px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .topic-btn.active {
+    background: #EEEDFE;
+    color: #3C3489;
+    border-color: #AFA9EC;
+  }
+
+  .generate-btn {
+    width: 100%;
+    padding: 11px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #1a1a1a;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    transition: background 0.15s;
+  }
+
+  .generate-btn:hover { background: #f0efe9; }
+  .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* API Key input */
+  .apikey-section {
+    background: #fff;
+    border: 1px solid #e0ddd6;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .apikey-label {
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .apikey-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .apikey-input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: monospace;
+    background: #fafaf8;
+    color: #1a1a1a;
+    outline: none;
+  }
+
+  .apikey-input:focus { border-color: #AFA9EC; }
+
+  .apikey-save {
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid #AFA9EC;
+    background: #EEEDFE;
+    color: #3C3489;
+    font-size: 13px;
+    cursor: pointer;
+  }
+
+  .apikey-note {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 6px;
+  }
+
+  /* Article */
+  .article-card {
+    background: #fff;
+    border: 1px solid #e0ddd6;
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .article-meta {
+    font-size: 11px;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 0.75rem;
+  }
+
+  .article-text {
+    font-size: 15px;
+    line-height: 1.9;
+    color: #1a1a1a;
+  }
+
+  .blank-group {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    vertical-align: middle;
+    margin: 0 3px;
+  }
+
+  .blank-hint {
+    font-size: 10px;
+    color: #aaa;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 1px;
+  }
+
+  .blank-input {
+    width: 130px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    background: transparent;
+    font-size: 15px;
+    color: #1a1a1a;
+    text-align: center;
+    padding: 2px 4px;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+
+  .blank-input:focus { border-bottom-color: #534AB7; }
+  .blank-input.correct { border-bottom-color: #3B6D11; color: #27500A; }
+  .blank-input.wrong { border-bottom-color: #A32D2D; color: #791F1F; }
+
+  .check-btn {
+    width: 100%;
+    padding: 11px;
+    border-radius: 10px;
+    border: 1px solid #AFA9EC;
+    background: #EEEDFE;
+    color: #3C3489;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 1.25rem;
+    transition: background 0.15s;
+  }
+
+  .check-btn:hover { background: #CECBF6; }
+
+  /* Results */
+  .score-bar {
+    background: #fff;
+    border: 1px solid #e0ddd6;
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .score-big { font-size: 32px; font-weight: 500; }
+  .score-label { font-size: 13px; color: #888; margin-top: 4px; }
+
+  .result-card {
+    border-radius: 10px;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.65rem;
+    border: 1px solid transparent;
+  }
+
+  .result-card.ok { background: #EAF3DE; border-color: #C0DD97; }
+  .result-card.no { background: #FCEBEB; border-color: #F7C1C1; }
+
+  .result-num { font-size: 12px; font-weight: 500; margin-bottom: 3px; color: #666; }
+  .result-answer { font-size: 15px; font-weight: 500; margin-bottom: 3px; }
+  .result-card.ok .result-answer { color: #27500A; }
+  .result-card.no .result-answer { color: #791F1F; }
+  .result-zh { font-size: 13px; color: #666; }
+
+  .loading {
+    text-align: center;
+    padding: 2.5rem 0;
+    color: #888;
+    font-size: 14px;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ddd;
+    border-top-color: #534AB7;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-msg {
+    color: #A32D2D;
+    font-size: 13px;
+    padding: 0.75rem;
+    background: #FCEBEB;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>西班牙语C1 · 词语派生练习</h1>
+  <p class="subtitle">Derivación de palabras — 根据括号中的词根，填入正确的派生词</p>
+
+  <!-- API Key 输入区 -->
+  <div class="apikey-section">
+    <label class="apikey-label">Anthropic API Key（首次使用请填入）</label>
+    <div class="apikey-row">
+      <input class="apikey-input" type="password" id="apikeyInput" placeholder="sk-ant-..." />
+      <button class="apikey-save" onclick="saveKey()">保存</button>
+    </div>
+    <p class="apikey-note">Key 只存在你的浏览器本地，不会上传到任何服务器。</p>
+  </div>
+
+  <!-- 主题选择 -->
+  <div class="topic-row" id="topicRow">
+    <button class="topic-btn active" data-topic="trabajo y economía">工作与经济</button>
+    <button class="topic-btn" data-topic="medio ambiente">环境与自然</button>
+    <button class="topic-btn" data-topic="tecnología y sociedad">科技与社会</button>
+    <button class="topic-btn" data-topic="educación">教育</button>
+    <button class="topic-btn" data-topic="salud">健康</button>
+    <button class="topic-btn" data-topic="cultura e identidad">文化与身份</button>
+  </div>
+
+  <button class="generate-btn" id="generateBtn" onclick="generateExercise()">
+    🔄 生成新练习
+  </button>
+
+  <div id="exerciseArea"></div>
+  <div id="resultsArea"></div>
+
+</div>
+
+<script>
+let currentTopic = 'trabajo y economía';
+let currentExercise = null;
+
+// 读取已保存的key
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('anthropic_key');
+  if (saved) document.getElementById('apikeyInput').value = saved;
+});
+
+function saveKey() {
+  const key = document.getElementById('apikeyInput').value.trim();
+  if (key) {
+    localStorage.setItem('anthropic_key', key);
+    alert('Key 已保存！');
+  }
+}
+
+// 主题切换
+document.getElementById('topicRow').querySelectorAll('.topic-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTopic = btn.dataset.topic;
+  });
+});
+
+async function generateExercise() {
+  const apiKey = document.getElementById('apikeyInput').value.trim();
+  if (!apiKey) {
+    alert('请先填入 Anthropic API Key');
+    return;
+  }
+
+  const btn = document.getElementById('generateBtn');
+  btn.disabled = true;
+  document.getElementById('exerciseArea').innerHTML = '<div class="loading"><span class="spinner"></span>AI正在生成练习，请稍候...</div>';
+  document.getElementById('resultsArea').innerHTML = '';
+
+  const prompt = `Eres un creador de ejercicios de español para nivel C1. Crea un ejercicio de "derivación de palabras" sobre el tema: "${currentTopic}".
+
+INSTRUCCIONES:
+1. Escribe un texto cohesivo de 120-150 palabras de nivel C1 sobre ese tema.
+2. En el texto, elige exactamente 6 posiciones donde irán huecos. Cada hueco requiere que el estudiante derive correctamente una palabra a partir de una raíz dada.
+3. Las palabras raíz deben ser sustantivos, adjetivos o verbos simples (ej: PRECARIO, GESTIONAR, ESTACIONAL).
+4. La respuesta correcta debe ser una forma derivada no obvia.
+
+Responde SOLO en JSON válido, sin markdown, sin texto extra:
+{
+  "topic": "${currentTopic}",
+  "paragraphs": ["texto antes del hueco 1","texto entre hueco 1 y 2","texto entre hueco 2 y 3","texto entre hueco 3 y 4","texto entre hueco 4 y 5","texto entre hueco 5 y 6","texto después del hueco 6"],
+  "blanks": [
+    {"id": 1, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"},
+    {"id": 2, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"},
+    {"id": 3, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"},
+    {"id": 4, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"},
+    {"id": 5, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"},
+    {"id": 6, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"}
+  ]
+}`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1200,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error?.message || '请求失败');
+    }
+
+    const data = await res.json();
+    const text = data.content.map(i => i.text || '').join('').trim();
+    const clean = text.replace(/```json|```/g, '').trim();
+    currentExercise = JSON.parse(clean);
+    renderExercise(currentExercise);
+
+  } catch (e) {
+    document.getElementById('exerciseArea').innerHTML =
+      `<div class="error-msg">生成失败：${e.message}<br>请检查 API Key 是否正确，然后重试。</div>`;
+  }
+
+  btn.disabled = false;
+}
+
+function renderExercise(ex) {
+  const p = ex.paragraphs;
+  const b = ex.blanks;
+  let html = `<div class="article-card">
+    <div class="article-meta">C1 · 词语派生 · ${esc(ex.topic)}</div>
+    <div class="article-text">`;
+
+  for (let i = 0; i < b.length; i++) {
+    html += esc(p[i]);
+    html += `<span class="blank-group">
+      <span class="blank-hint">${esc(b[i].root)}（${esc(b[i].zh_hint)}）</span>
+      <input class="blank-input" type="text" id="blank_${b[i].id}"
+        placeholder="？" autocomplete="off" autocorrect="off" spellcheck="false">
+    </span>`;
+  }
+  if (p[b.length]) html += esc(p[b.length]);
+  html += `</div></div>
+  <button class="check-btn" onclick="checkAnswers()">批改答案</button>`;
+
+  document.getElementById('exerciseArea').innerHTML = html;
+}
+
+function checkAnswers() {
+  if (!currentExercise) return;
+  const b = currentExercise.blanks;
+  let correct = 0;
+  let details = '';
+
+  b.forEach(blank => {
+    const inp = document.getElementById('blank_' + blank.id);
+    const val = inp ? inp.value.trim().toLowerCase() : '';
+    const ok = val === blank.answer.toLowerCase();
+    if (ok) { correct++; if (inp) inp.classList.add('correct'); }
+    else { if (inp) inp.classList.add('wrong'); }
+
+    const cls = ok ? 'ok' : 'no';
+    const icon = ok ? '✓' : '✗';
+    const userNote = (!ok && val) ? `（你的答案：${esc(val)}）` : (!ok ? '（未作答）' : '');
+    details += `<div class="result-card ${cls}">
+      <div class="result-num">${icon} 第${blank.id}空 · ${esc(blank.root)}</div>
+      <div class="result-answer">${ok ? '✓ ' + esc(blank.answer) : '✗ ' + esc(blank.answer) + userNote}</div>
+      <div class="result-zh">${esc(blank.zh_answer)}</div>
+    </div>`;
+  });
+
+  const pct = Math.round(correct / b.length * 100);
+  document.getElementById('resultsArea').innerHTML =
+    `<div class="score-bar">
+      <div class="score-big">${correct} / ${b.length}</div>
+      <div class="score-label">答对 ${pct}%</div>
+    </div>` + details;
+
+  document.getElementById('resultsArea').scrollIntoView({ behavior: 'smooth' });
+}
+
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>

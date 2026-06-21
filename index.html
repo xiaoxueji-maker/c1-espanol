@@ -5,412 +5,389 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>西班牙语C1 · 词语派生练习</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: #f5f4f0;
-    color: #1a1a1a;
-    min-height: 100vh;
-    padding: 1rem;
-  }
-
-  .container {
-    max-width: 680px;
-    margin: 0 auto;
-  }
-
-  h1 {
-    font-size: 18px;
-    font-weight: 500;
-    margin-bottom: 4px;
-    color: #1a1a1a;
-  }
-
-  .subtitle {
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 1.25rem;
-  }
-
-  .topic-row {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-  }
-
-  .topic-btn {
-    font-size: 13px;
-    padding: 5px 12px;
-    border-radius: 999px;
-    border: 1px solid #ddd;
-    background: #fff;
-    color: #555;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .topic-btn.active {
-    background: #EEEDFE;
-    color: #3C3489;
-    border-color: #AFA9EC;
-  }
-
-  .generate-btn {
-    width: 100%;
-    padding: 11px;
-    border-radius: 10px;
-    border: 1px solid #ddd;
-    background: #fff;
-    color: #1a1a1a;
-    font-size: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 1.25rem;
-    transition: background 0.15s;
-  }
-
-  .generate-btn:hover { background: #f0efe9; }
-  .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  /* API Key input */
-  .apikey-section {
-    background: #fff;
-    border: 1px solid #e0ddd6;
-    border-radius: 12px;
-    padding: 1rem 1.25rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .apikey-label {
-    font-size: 13px;
-    color: #555;
-    margin-bottom: 6px;
-    display: block;
-  }
-
-  .apikey-row {
-    display: flex;
-    gap: 8px;
-  }
-
-  .apikey-input {
-    flex: 1;
-    padding: 8px 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 13px;
-    font-family: monospace;
-    background: #fafaf8;
-    color: #1a1a1a;
-    outline: none;
-  }
-
-  .apikey-input:focus { border-color: #AFA9EC; }
-
-  .apikey-save {
-    padding: 8px 14px;
-    border-radius: 8px;
-    border: 1px solid #AFA9EC;
-    background: #EEEDFE;
-    color: #3C3489;
-    font-size: 13px;
-    cursor: pointer;
-  }
-
-  .apikey-note {
-    font-size: 11px;
-    color: #aaa;
-    margin-top: 6px;
-  }
-
-  /* Article */
-  .article-card {
-    background: #fff;
-    border: 1px solid #e0ddd6;
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin-bottom: 1rem;
-  }
-
-  .article-meta {
-    font-size: 11px;
-    color: #aaa;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 0.75rem;
-  }
-
-  .article-text {
-    font-size: 15px;
-    line-height: 1.9;
-    color: #1a1a1a;
-  }
-
-  .blank-group {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    vertical-align: middle;
-    margin: 0 3px;
-  }
-
-  .blank-hint {
-    font-size: 10px;
-    color: #aaa;
-    text-align: center;
-    line-height: 1.2;
-    margin-bottom: 1px;
-  }
-
-  .blank-input {
-    width: 130px;
-    border: none;
-    border-bottom: 2px solid #ccc;
-    background: transparent;
-    font-size: 15px;
-    color: #1a1a1a;
-    text-align: center;
-    padding: 2px 4px;
-    outline: none;
-    font-family: inherit;
-    transition: border-color 0.15s;
-  }
-
-  .blank-input:focus { border-bottom-color: #534AB7; }
-  .blank-input.correct { border-bottom-color: #3B6D11; color: #27500A; }
-  .blank-input.wrong { border-bottom-color: #A32D2D; color: #791F1F; }
-
-  .check-btn {
-    width: 100%;
-    padding: 11px;
-    border-radius: 10px;
-    border: 1px solid #AFA9EC;
-    background: #EEEDFE;
-    color: #3C3489;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    margin-bottom: 1.25rem;
-    transition: background 0.15s;
-  }
-
-  .check-btn:hover { background: #CECBF6; }
-
-  /* Results */
-  .score-bar {
-    background: #fff;
-    border: 1px solid #e0ddd6;
-    border-radius: 12px;
-    padding: 1.25rem;
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-
-  .score-big { font-size: 32px; font-weight: 500; }
-  .score-label { font-size: 13px; color: #888; margin-top: 4px; }
-
-  .result-card {
-    border-radius: 10px;
-    padding: 0.9rem 1.1rem;
-    margin-bottom: 0.65rem;
-    border: 1px solid transparent;
-  }
-
-  .result-card.ok { background: #EAF3DE; border-color: #C0DD97; }
-  .result-card.no { background: #FCEBEB; border-color: #F7C1C1; }
-
-  .result-num { font-size: 12px; font-weight: 500; margin-bottom: 3px; color: #666; }
-  .result-answer { font-size: 15px; font-weight: 500; margin-bottom: 3px; }
-  .result-card.ok .result-answer { color: #27500A; }
-  .result-card.no .result-answer { color: #791F1F; }
-  .result-zh { font-size: 13px; color: #666; }
-
-  .loading {
-    text-align: center;
-    padding: 2.5rem 0;
-    color: #888;
-    font-size: 14px;
-  }
-
-  .spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #ddd;
-    border-top-color: #534AB7;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin-right: 8px;
-    vertical-align: middle;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .error-msg {
-    color: #A32D2D;
-    font-size: 13px;
-    padding: 0.75rem;
-    background: #FCEBEB;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-  }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #f5f4f0;
+  color: #1a1a1a;
+  min-height: 100vh;
+  padding: 1rem;
+}
+.container { max-width: 680px; margin: 0 auto; }
+h1 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+.subtitle { font-size: 13px; color: #888; margin-bottom: 1.25rem; }
+.topic-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; }
+.topic-btn {
+  font-size: 13px; padding: 5px 12px; border-radius: 999px;
+  border: 1px solid #ddd; background: #fff; color: #555; cursor: pointer;
+}
+.topic-btn.active { background: #EEEDFE; color: #3C3489; border-color: #AFA9EC; }
+.next-btn {
+  width: 100%; padding: 11px; border-radius: 10px;
+  border: 1px solid #ddd; background: #fff; color: #1a1a1a;
+  font-size: 14px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center; gap: 8px;
+  margin-bottom: 1.25rem;
+}
+.next-btn:hover { background: #f0efe9; }
+.article-card {
+  background: #fff; border: 1px solid #e0ddd6;
+  border-radius: 12px; padding: 1.25rem; margin-bottom: 1rem;
+}
+.article-meta { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.75rem; }
+.article-text { font-size: 15px; line-height: 1.9; }
+.blank-group { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; margin: 0 3px; }
+.blank-hint { font-size: 10px; color: #aaa; text-align: center; line-height: 1.2; margin-bottom: 1px; }
+.blank-input {
+  width: 130px; border: none; border-bottom: 2px solid #ccc;
+  background: transparent; font-size: 15px; color: #1a1a1a;
+  text-align: center; padding: 2px 4px; outline: none; font-family: inherit;
+}
+.blank-input:focus { border-bottom-color: #534AB7; }
+.blank-input.correct { border-bottom-color: #3B6D11; color: #27500A; }
+.blank-input.wrong { border-bottom-color: #A32D2D; color: #791F1F; }
+.check-btn {
+  width: 100%; padding: 11px; border-radius: 10px;
+  border: 1px solid #AFA9EC; background: #EEEDFE; color: #3C3489;
+  font-size: 14px; font-weight: 500; cursor: pointer; margin-bottom: 1.25rem;
+}
+.check-btn:hover { background: #CECBF6; }
+.score-bar {
+  background: #fff; border: 1px solid #e0ddd6; border-radius: 12px;
+  padding: 1.25rem; text-align: center; margin-bottom: 1rem;
+}
+.score-big { font-size: 32px; font-weight: 500; }
+.score-label { font-size: 13px; color: #888; margin-top: 4px; }
+.result-card { border-radius: 10px; padding: 0.9rem 1.1rem; margin-bottom: 0.65rem; border: 1px solid transparent; }
+.result-card.ok { background: #EAF3DE; border-color: #C0DD97; }
+.result-card.no { background: #FCEBEB; border-color: #F7C1C1; }
+.result-num { font-size: 12px; font-weight: 500; margin-bottom: 3px; color: #666; }
+.result-answer { font-size: 15px; font-weight: 500; margin-bottom: 3px; }
+.result-card.ok .result-answer { color: #27500A; }
+.result-card.no .result-answer { color: #791F1F; }
+.result-zh { font-size: 13px; color: #666; }
+.counter { font-size: 12px; color: #aaa; text-align: right; margin-bottom: 0.5rem; }
 </style>
 </head>
 <body>
 <div class="container">
-
   <h1>西班牙语C1 · 词语派生练习</h1>
   <p class="subtitle">Derivación de palabras — 根据括号中的词根，填入正确的派生词</p>
 
-  <!-- API Key 输入区 -->
-  <div class="apikey-section">
-    <label class="apikey-label">Anthropic API Key（首次使用请填入）</label>
-    <div class="apikey-row">
-      <input class="apikey-input" type="password" id="apikeyInput" placeholder="sk-ant-..." />
-      <button class="apikey-save" onclick="saveKey()">保存</button>
-    </div>
-    <p class="apikey-note">Key 只存在你的浏览器本地，不会上传到任何服务器。</p>
-  </div>
-
-  <!-- 主题选择 -->
   <div class="topic-row" id="topicRow">
-    <button class="topic-btn active" data-topic="trabajo y economía">工作与经济</button>
-    <button class="topic-btn" data-topic="medio ambiente">环境与自然</button>
-    <button class="topic-btn" data-topic="tecnología y sociedad">科技与社会</button>
-    <button class="topic-btn" data-topic="educación">教育</button>
+    <button class="topic-btn active" data-topic="trabajo">工作与经济</button>
+    <button class="topic-btn" data-topic="medioambiente">环境与自然</button>
+    <button class="topic-btn" data-topic="tecnologia">科技与社会</button>
+    <button class="topic-btn" data-topic="educacion">教育</button>
     <button class="topic-btn" data-topic="salud">健康</button>
-    <button class="topic-btn" data-topic="cultura e identidad">文化与身份</button>
+    <button class="topic-btn" data-topic="cultura">文化与身份</button>
   </div>
 
-  <button class="generate-btn" id="generateBtn" onclick="generateExercise()">
-    🔄 生成新练习
-  </button>
-
+  <button class="next-btn" id="nextBtn" onclick="loadNext()">🔄 换一道题</button>
+  <div class="counter" id="counter"></div>
   <div id="exerciseArea"></div>
   <div id="resultsArea"></div>
-
 </div>
 
 <script>
-let currentTopic = 'trabajo y economía';
+const EXERCISES = {
+  trabajo: [
+    {
+      title: "工作与经济",
+      paragraphs: [
+        "Los mercados laborales modernos exigen una mayor ",
+        " por parte de los trabajadores. La capacidad de adaptarse a entornos cambiantes resulta fundamental en un contexto de ",
+        " tecnológica acelerada. Muchas empresas apuestan por la formación continua para garantizar la ",
+        " de sus empleados frente a la automatización. Sin embargo, esta dinámica también genera cierta ",
+        " entre aquellos trabajadores que temen perder su puesto. Por ello, las políticas de empleo deben contemplar mecanismos de ",
+        " laboral que protejan a los colectivos más vulnerables, fomentando así una transición ",
+        " hacia los nuevos modelos productivos."
+      ],
+      blanks: [
+        {id:1, root:"FLEXIBLE", answer:"flexibilidad", zh_hint:"灵活的", zh_answer:"灵活性"},
+        {id:2, root:"TRANSFORMAR", answer:"transformación", zh_hint:"改变", zh_answer:"变革"},
+        {id:3, root:"COMPETIR", answer:"competitividad", zh_hint:"竞争", zh_answer:"竞争力"},
+        {id:4, root:"INCERTIDUMBRE", answer:"incertidumbre", zh_hint:"不确定", zh_answer:"不确定性"},
+        {id:5, root:"PROTEGER", answer:"protección", zh_hint:"保护", zh_answer:"保护"},
+        {id:6, root:"JUSTO", answer:"justa", zh_hint:"公正的", zh_answer:"公正地（过渡）"}
+      ]
+    },
+    {
+      title: "工作与经济",
+      paragraphs: [
+        "El auge del teletrabajo ha supuesto una profunda ",
+        " de la cultura empresarial en muchos países. La ",
+        " entre vida laboral y personal ha pasado a ser una prioridad para los trabajadores, quienes valoran cada vez más la ",
+        " de sus horarios. No obstante, la falta de supervisión directa plantea retos en cuanto a la ",
+        " del rendimiento. Las empresas más ",
+        " han desarrollado nuevos indicadores basados en resultados, promoviendo así una gestión más ",
+        " de los equipos distribuidos."
+      ],
+      blanks: [
+        {id:1, root:"TRANSFORMAR", answer:"transformación", zh_hint:"转变", zh_answer:"转变"},
+        {id:2, root:"CONCILIAR", answer:"conciliación", zh_hint:"调和", zh_answer:"工作生活平衡"},
+        {id:3, root:"AUTÓNOMO", answer:"autonomía", zh_hint:"自主的", zh_answer:"自主性"},
+        {id:4, root:"EVALUAR", answer:"evaluación", zh_hint:"评估", zh_answer:"评估"},
+        {id:5, root:"INNOVAR", answer:"innovadoras", zh_hint:"创新", zh_answer:"具有创新性的"},
+        {id:6, root:"EFICIENTE", answer:"eficiente", zh_hint:"高效的", zh_answer:"高效地"}
+      ]
+    }
+  ],
+  medioambiente: [
+    {
+      title: "环境与自然",
+      paragraphs: [
+        "La ",
+        " del planeta es uno de los retos más urgentes de nuestro tiempo. El aumento de las emisiones de gases de efecto invernadero ha provocado una ",
+        " climática sin precedentes. La comunidad científica advierte de que, sin medidas de ",
+        " inmediatas, las consecuencias serán ",
+        ". Los gobiernos han adoptado compromisos de ",
+        " energética para reducir la dependencia de los combustibles fósiles. No obstante, la ",
+        " de estas políticas depende en gran medida de la voluntad política y la cooperación internacional."
+      ],
+      blanks: [
+        {id:1, root:"SOSTENIBLE", answer:"sostenibilidad", zh_hint:"可持续的", zh_answer:"可持续性"},
+        {id:2, root:"ALTERAR", answer:"alteración", zh_hint:"改变", zh_answer:"气候变化/异常"},
+        {id:3, root:"MITIGAR", answer:"mitigación", zh_hint:"减缓", zh_answer:"减缓措施"},
+        {id:4, root:"IRREVERSIBLE", answer:"irreversibles", zh_hint:"不可逆的", zh_answer:"不可逆的（后果）"},
+        {id:5, root:"TRANSITAR", answer:"transición", zh_hint:"过渡", zh_answer:"能源转型"},
+        {id:6, root:"EFICAZ", answer:"eficacia", zh_hint:"有效的", zh_answer:"有效性"}
+      ]
+    },
+    {
+      title: "环境与自然",
+      paragraphs: [
+        "La ",
+        " de los océanos representa una amenaza grave para los ecosistemas marinos. La acumulación de residuos plásticos afecta a la ",
+        " de numerosas especies. Los científicos señalan que la ",
+        " de estas sustancias en la cadena alimentaria podría tener efectos ",
+        " sobre la salud humana. Por ello, se promueve una economía ",
+        " que minimice la generación de residuos. La ",
+        " ciudadana resulta clave para el éxito de estas iniciativas."
+      ],
+      blanks: [
+        {id:1, root:"CONTAMINAR", answer:"contaminación", zh_hint:"污染", zh_answer:"污染"},
+        {id:2, root:"SOBREVIVIR", answer:"supervivencia", zh_hint:"生存", zh_answer:"生存"},
+        {id:3, root:"ACUMULAR", answer:"acumulación", zh_hint:"积累", zh_answer:"积累"},
+        {id:4, root:"PERJUDICAR", answer:"perjudiciales", zh_hint:"有害的", zh_answer:"有害的"},
+        {id:5, root:"CIRCULAR", answer:"circular", zh_hint:"循环的", zh_answer:"循环经济"},
+        {id:6, root:"CONCIENCIAR", answer:"concienciación", zh_hint:"意识", zh_answer:"意识培养"}
+      ]
+    }
+  ],
+  tecnologia: [
+    {
+      title: "科技与社会",
+      paragraphs: [
+        "La inteligencia artificial está experimentando un desarrollo ",
+        " que transforma sectores enteros de la economía. Su ",
+        " en ámbitos como la medicina o la educación abre enormes posibilidades, aunque también plantea interrogantes sobre la ",
+        " de los datos personales. La falta de ",
+        " en los algoritmos genera desconfianza en la ciudadanía. Los expertos abogan por un marco ",
+        " que garantice un uso ",
+        " y responsable de estas tecnologías."
+      ],
+      blanks: [
+        {id:1, root:"VERTIGINOSO", answer:"vertiginoso", zh_hint:"令人眩晕的", zh_answer:"飞速的"},
+        {id:2, root:"APLICAR", answer:"aplicación", zh_hint:"应用", zh_answer:"应用"},
+        {id:3, root:"PRIVADO", answer:"privacidad", zh_hint:"私人的", zh_answer:"隐私"},
+        {id:4, root:"TRANSPARENTE", answer:"transparencia", zh_hint:"透明的", zh_answer:"透明度"},
+        {id:5, root:"REGULAR", answer:"regulatorio", zh_hint:"规范", zh_answer:"监管框架"},
+        {id:6, root:"ÉTICO", answer:"ético", zh_hint:"伦理的", zh_answer:"符合伦理地"}
+      ]
+    },
+    {
+      title: "科技与社会",
+      paragraphs: [
+        "Las redes sociales han redefinido los patrones de ",
+        " entre las personas. Su capacidad de ",
+        " masiva de información ha transformado el panorama mediático. Sin embargo, la ",
+        " de noticias falsas representa un riesgo para la ",
+        " democrática. Los algoritmos de ",
+        " personalizan los contenidos, lo que puede generar burbujas informativas que limiten la ",
+        " de perspectivas diversas."
+      ],
+      blanks: [
+        {id:1, root:"INTERACTUAR", answer:"interacción", zh_hint:"互动", zh_answer:"互动"},
+        {id:2, root:"DIFUNDIR", answer:"difusión", zh_hint:"传播", zh_answer:"传播"},
+        {id:3, root:"CIRCULAR", answer:"circulación", zh_hint:"流通", zh_answer:"（假新闻）传播"},
+        {id:4, root:"DELIBERAR", answer:"deliberación", zh_hint:"审议", zh_answer:"民主审议"},
+        {id:5, root:"RECOMENDAR", answer:"recomendación", zh_hint:"推荐", zh_answer:"推荐算法"},
+        {id:6, root:"EXPONER", answer:"exposición", zh_hint:"暴露", zh_answer:"接触/暴露"}
+      ]
+    }
+  ],
+  educacion: [
+    {
+      title: "教育",
+      paragraphs: [
+        "La ",
+        " educativa es un proceso continuo que va más allá de la adquisición de conocimientos académicos. El desarrollo de competencias ",
+        " como el pensamiento crítico o la ",
+        " resulta esencial en el mundo actual. Los modelos pedagógicos más ",
+        " apuestan por el aprendizaje basado en proyectos, fomentando así la ",
+        " del alumnado. No obstante, persisten ",
+        " de acceso que dificultan la igualdad de oportunidades."
+      ],
+      blanks: [
+        {id:1, root:"FORMAR", answer:"formación", zh_hint:"培养", zh_answer:"培养/教育"},
+        {id:2, root:"TRANSFERIR", answer:"transversales", zh_hint:"横向传递", zh_answer:"跨学科能力"},
+        {id:3, root:"CREAR", answer:"creatividad", zh_hint:"创造", zh_answer:"创造力"},
+        {id:4, root:"INNOVAR", answer:"innovadores", zh_hint:"创新", zh_answer:"创新型的"},
+        {id:5, root:"AUTÓNOMO", answer:"autonomía", zh_hint:"自主", zh_answer:"自主性"},
+        {id:6, root:"DESIGUALDAD", answer:"desigualdades", zh_hint:"不平等", zh_answer:"不平等（复数）"}
+      ]
+    },
+    {
+      title: "教育",
+      paragraphs: [
+        "La ",
+        " de la educación superior ha experimentado cambios significativos en las últimas décadas. El acceso a la universidad ya no garantiza la ",
+        " laboral inmediata de los egresados. La ",
+        " entre la oferta académica y las demandas del mercado laboral sigue siendo un reto. Muchos estudiantes optan por la ",
+        " profesional como alternativa más práctica. Los expertos defienden una mayor ",
+        " entre universidades y empresas para mejorar la ",
+        " de los futuros profesionales."
+      ],
+      blanks: [
+        {id:1, root:"GLOBALIZAR", answer:"globalización", zh_hint:"全球化", zh_answer:"高等教育全球化"},
+        {id:2, root:"INSERTAR", answer:"inserción", zh_hint:"插入/融入", zh_answer:"就业融入"},
+        {id:3, root:"DESCONECTAR", answer:"desconexión", zh_hint:"断开", zh_answer:"脱节"},
+        {id:4, root:"FORMAR", answer:"formación", zh_hint:"培训", zh_answer:"职业培训"},
+        {id:5, root:"COLABORAR", answer:"colaboración", zh_hint:"合作", zh_answer:"合作"},
+        {id:6, root:"EMPLEAR", answer:"empleabilidad", zh_hint:"雇用", zh_answer:"就业能力"}
+      ]
+    }
+  ],
+  salud: [
+    {
+      title: "健康",
+      paragraphs: [
+        "El ",
+        " de los sistemas sanitarios públicos constituye uno de los debates más relevantes en las sociedades contemporáneas. La ",
+        " de la población en los países desarrollados ejerce una presión creciente sobre los recursos disponibles. La ",
+        " de enfermedades crónicas como la diabetes o la hipertensión requiere una atención ",
+        " y sostenida. Los gobiernos promueven hábitos de vida ",
+        " para reducir la carga asistencial, apostando por la ",
+        " como estrategia prioritaria de salud pública."
+      ],
+      blanks: [
+        {id:1, root:"FINANCIAR", answer:"financiamiento", zh_hint:"资助", zh_answer:"资金/资助"},
+        {id:2, root:"ENVEJECER", answer:"envejicimiento", zh_hint:"变老", zh_answer:"人口老龄化"},
+        {id:3, root:"PREVALECER", answer:"prevalencia", zh_hint:"流行", zh_answer:"患病率"},
+        {id:4, root:"CONTINUO", answer:"continuada", zh_hint:"持续的", zh_answer:"持续性的"},
+        {id:5, root:"SANO", answer:"saludables", zh_hint:"健康的", zh_answer:"健康的（习惯）"},
+        {id:6, root:"PREVENIR", answer:"prevención", zh_hint:"预防", zh_answer:"预防"}
+      ]
+    },
+    {
+      title: "健康",
+      paragraphs: [
+        "La salud mental ha ganado un notable ",
+        " en el debate público de los últimos años. El ",
+        " de los trastornos de ansiedad y depresión entre la población joven es cada vez mayor. Los expertos señalan que el estigma ",
+        " asociado a estas condiciones dificulta la búsqueda de ayuda. Se reclama una mayor ",
+        " de recursos destinados a la atención psicológica. La ",
+        " laboral, el uso excesivo de pantallas y la falta de vínculos sociales son factores que contribuyen al ",
+        " del bienestar emocional."
+      ],
+      blanks: [
+        {id:1, root:"PROMINENTE", answer:"protagonismo", zh_hint:"突出的", zh_answer:"重要性/关注度"},
+        {id:2, root:"INCREMENTAR", answer:"incremento", zh_hint:"增加", zh_answer:"增加"},
+        {id:3, root:"SOCIAL", answer:"social", zh_hint:"社会的", zh_answer:"社会污名"},
+        {id:4, root:"DOTAR", answer:"dotación", zh_hint:"配备", zh_answer:"资源配备"},
+        {id:5, root:"PRECARIO", answer:"precariedad", zh_hint:"不稳定的", zh_answer:"不稳定性"},
+        {id:6, root:"DETERIORAR", answer:"deterioro", zh_hint:"恶化", zh_answer:"恶化"}
+      ]
+    }
+  ],
+  cultura: [
+    {
+      title: "文化与身份",
+      paragraphs: [
+        "La ",
+        " cultural es un fenómeno inherente a las sociedades abiertas y dinámicas. El contacto entre comunidades de distinto origen enriquece el ",
+        " colectivo y amplía los horizontes ",
+        " de sus miembros. Sin embargo, también pueden surgir tensiones derivadas de la ",
+        " de valores o costumbres. Una gestión ",
+        " de la diversidad requiere políticas de inclusión que garanticen la ",
+        " de todas las identidades culturales."
+      ],
+      blanks: [
+        {id:1, root:"DIVERSO", answer:"diversidad", zh_hint:"多样的", zh_answer:"多样性"},
+        {id:2, root:"IMAGINAR", answer:"imaginario", zh_hint:"想象", zh_answer:"集体想象"},
+        {id:3, root:"SIMBÓLICO", answer:"simbólicos", zh_hint:"象征的", zh_answer:"象征层面的"},
+        {id:4, root:"CHOCAR", answer:"colisión", zh_hint:"碰撞", zh_answer:"价值观碰撞"},
+        {id:5, root:"ADECUADO", answer:"adecuada", zh_hint:"适当的", zh_answer:"恰当的"},
+        {id:6, root:"CONVIVIR", answer:"convivencia", zh_hint:"共存", zh_answer:"共存"}
+      ]
+    },
+    {
+      title: "文化与身份",
+      paragraphs: [
+        "El patrimonio ",
+        " de un pueblo constituye un elemento fundamental de su identidad colectiva. La ",
+        " de tradiciones orales, artesanías y rituales ancestrales frente a la ",
+        " cultural plantea un reto de gran complejidad. Las instituciones culturales desempeñan un papel ",
+        " en la documentación y difusión de estas expresiones. No obstante, la ",
+        " excesiva de la cultura puede despojarla de su ",
+        " original y convertirla en un mero producto de consumo."
+      ],
+      blanks: [
+        {id:1, root:"INMATERIAL", answer:"inmaterial", zh_hint:"非物质的", zh_answer:"非物质的（遗产）"},
+        {id:2, root:"PRESERVAR", answer:"preservación", zh_hint:"保存", zh_answer:"保护/保存"},
+        {id:3, root:"HOMOGENEIZAR", answer:"homogeneización", zh_hint:"同质化", zh_answer:"文化同质化"},
+        {id:4, root:"ESENCIAL", answer:"esencial", zh_hint:"核心的", zh_answer:"核心的"},
+        {id:5, root:"COMERCIALIZAR", answer:"comercialización", zh_hint:"商业化", zh_answer:"商业化"},
+        {id:6, root:"AUTÉNTICO", answer:"autenticidad", zh_hint:"真实的", zh_answer:"真实性"}
+      ]
+    }
+  ]
+};
+
+let currentTopic = 'trabajo';
+let usedIndices = {};
 let currentExercise = null;
 
-// 读取已保存的key
-window.addEventListener('load', () => {
-  const saved = localStorage.getItem('anthropic_key');
-  if (saved) document.getElementById('apikeyInput').value = saved;
-});
-
-function saveKey() {
-  const key = document.getElementById('apikeyInput').value.trim();
-  if (key) {
-    localStorage.setItem('anthropic_key', key);
-    alert('Key 已保存！');
-  }
-}
-
-// 主题切换
-document.getElementById('topicRow').querySelectorAll('.topic-btn').forEach(btn => {
+document.querySelectorAll('.topic-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     currentTopic = btn.dataset.topic;
+    loadNext();
   });
 });
 
-async function generateExercise() {
-  const apiKey = document.getElementById('apikeyInput').value.trim();
-  if (!apiKey) {
-    alert('请先填入 Anthropic API Key');
-    return;
-  }
-
-  const btn = document.getElementById('generateBtn');
-  btn.disabled = true;
-  document.getElementById('exerciseArea').innerHTML = '<div class="loading"><span class="spinner"></span>AI正在生成练习，请稍候...</div>';
+function loadNext() {
   document.getElementById('resultsArea').innerHTML = '';
-
-  const prompt = `Eres un creador de ejercicios de español para nivel C1. Crea un ejercicio de "derivación de palabras" sobre el tema: "${currentTopic}".
-
-INSTRUCCIONES:
-1. Escribe un texto cohesivo de 120-150 palabras de nivel C1 sobre ese tema.
-2. En el texto, elige exactamente 6 posiciones donde irán huecos. Cada hueco requiere que el estudiante derive correctamente una palabra a partir de una raíz dada.
-3. Las palabras raíz deben ser sustantivos, adjetivos o verbos simples (ej: PRECARIO, GESTIONAR, ESTACIONAL).
-4. La respuesta correcta debe ser una forma derivada no obvia.
-
-Responde SOLO en JSON válido, sin markdown, sin texto extra:
-{
-  "topic": "${currentTopic}",
-  "paragraphs": ["texto antes del hueco 1","texto entre hueco 1 y 2","texto entre hueco 2 y 3","texto entre hueco 3 y 4","texto entre hueco 4 y 5","texto entre hueco 5 y 6","texto después del hueco 6"],
-  "blanks": [
-    {"id": 1, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"},
-    {"id": 2, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"},
-    {"id": 3, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"},
-    {"id": 4, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"},
-    {"id": 5, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"},
-    {"id": 6, "root": "RAÍZ", "answer": "respuesta", "zh_hint": "词根中文", "zh_answer": "答案中文含义"}
-  ]
-}`;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1200,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    if (!res.ok) {
-      const err = await res.json();
-      throw new Error(err.error?.message || '请求失败');
-    }
-
-    const data = await res.json();
-    const text = data.content.map(i => i.text || '').join('').trim();
-    const clean = text.replace(/```json|```/g, '').trim();
-    currentExercise = JSON.parse(clean);
-    renderExercise(currentExercise);
-
-  } catch (e) {
-    document.getElementById('exerciseArea').innerHTML =
-      `<div class="error-msg">生成失败：${e.message}<br>请检查 API Key 是否正确，然后重试。</div>`;
-  }
-
-  btn.disabled = false;
+  const pool = EXERCISES[currentTopic];
+  if (!usedIndices[currentTopic]) usedIndices[currentTopic] = [];
+  let available = pool.map((_,i) => i).filter(i => !usedIndices[currentTopic].includes(i));
+  if (available.length === 0) { usedIndices[currentTopic] = []; available = pool.map((_,i) => i); }
+  const idx = available[Math.floor(Math.random() * available.length)];
+  usedIndices[currentTopic].push(idx);
+  currentExercise = pool[idx];
+  const total = pool.length;
+  const done = usedIndices[currentTopic].length;
+  document.getElementById('counter').textContent = `第 ${done} / ${total} 题`;
+  renderExercise(currentExercise);
 }
 
 function renderExercise(ex) {
   const p = ex.paragraphs;
   const b = ex.blanks;
   let html = `<div class="article-card">
-    <div class="article-meta">C1 · 词语派生 · ${esc(ex.topic)}</div>
+    <div class="article-meta">C1 · 词语派生 · ${esc(ex.title)}</div>
     <div class="article-text">`;
-
   for (let i = 0; i < b.length; i++) {
     html += esc(p[i]);
     html += `<span class="blank-group">
       <span class="blank-hint">${esc(b[i].root)}（${esc(b[i].zh_hint)}）</span>
-      <input class="blank-input" type="text" id="blank_${b[i].id}"
-        placeholder="？" autocomplete="off" autocorrect="off" spellcheck="false">
+      <input class="blank-input" type="text" id="blank_${b[i].id}" placeholder="？" autocomplete="off" autocorrect="off" spellcheck="false">
     </span>`;
   }
   if (p[b.length]) html += esc(p[b.length]);
-  html += `</div></div>
-  <button class="check-btn" onclick="checkAnswers()">批改答案</button>`;
-
+  html += `</div></div><button class="check-btn" onclick="checkAnswers()">批改答案 ✓</button>`;
   document.getElementById('exerciseArea').innerHTML = html;
 }
 
@@ -419,40 +396,31 @@ function checkAnswers() {
   const b = currentExercise.blanks;
   let correct = 0;
   let details = '';
-
   b.forEach(blank => {
     const inp = document.getElementById('blank_' + blank.id);
     const val = inp ? inp.value.trim().toLowerCase() : '';
     const ok = val === blank.answer.toLowerCase();
     if (ok) { correct++; if (inp) inp.classList.add('correct'); }
     else { if (inp) inp.classList.add('wrong'); }
-
     const cls = ok ? 'ok' : 'no';
-    const icon = ok ? '✓' : '✗';
-    const userNote = (!ok && val) ? `（你的答案：${esc(val)}）` : (!ok ? '（未作答）' : '');
+    const userNote = (!ok && val) ? `（你填的：${esc(val)}）` : (!ok ? '（未作答）' : '');
     details += `<div class="result-card ${cls}">
-      <div class="result-num">${icon} 第${blank.id}空 · ${esc(blank.root)}</div>
-      <div class="result-answer">${ok ? '✓ ' + esc(blank.answer) : '✗ ' + esc(blank.answer) + userNote}</div>
+      <div class="result-num">${ok?'✓':'✗'} 第${blank.id}空 · ${esc(blank.root)}</div>
+      <div class="result-answer">${ok ? '✓ '+esc(blank.answer) : '✗ '+esc(blank.answer)+userNote}</div>
       <div class="result-zh">${esc(blank.zh_answer)}</div>
     </div>`;
   });
-
   const pct = Math.round(correct / b.length * 100);
   document.getElementById('resultsArea').innerHTML =
-    `<div class="score-bar">
-      <div class="score-big">${correct} / ${b.length}</div>
-      <div class="score-label">答对 ${pct}%</div>
-    </div>` + details;
-
+    `<div class="score-bar"><div class="score-big">${correct} / ${b.length}</div><div class="score-label">答对 ${pct}%</div></div>` + details;
   document.getElementById('resultsArea').scrollIntoView({ behavior: 'smooth' });
 }
 
 function esc(str) {
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;');
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
+
+loadNext();
 </script>
 </body>
 </html>
